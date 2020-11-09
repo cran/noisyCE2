@@ -26,6 +26,7 @@ smaller than \code{reltol} stop the algorithm. This criterion is suitable
 only in case of deterministic objective functions.
 }
 \seealso{
-Other stopping rules: \code{\link{geweke}}
+Other stopping rules: 
+\code{\link{geweke}()}
 }
 \concept{stopping rules}

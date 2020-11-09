@@ -64,17 +64,17 @@ Computational and Graphical Statistics}, \strong{26} (3), pp. 695-708.
 \url{https://doi.org/10.1080/10618600.2016.1278003}
 
 Rubinstein, R. Y., and Kroese, D. P. (2004), \emph{The Cross-Entropy Method},
-Springer, New York.
+Springer, New York. ISBN: 978-1-4419-1940-3
 }
 \seealso{
 Useful links:
 \itemize{
   \item \url{https://www.flaviosanti.it/software/noisyCE2}
-  \item Report bugs at \url{https://github.com/f-santi/noisyCE2}
+  \item Report bugs at \url{https://github.com/f-santi/noisyCE2/issues}
 }
 
 }
 \author{
-\strong{Maintainer}: Flavio Santi \email{flavio.santi@univr.it} (0000-0002-2014-1981)
+\strong{Maintainer}: Flavio Santi \email{flavio.santi@univr.it} (\href{https://orcid.org/0000-0002-2014-1981}{ORCID})
 
 }

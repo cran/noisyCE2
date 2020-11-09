@@ -26,6 +26,7 @@ where
 for some \eqn{0.7\leq b\leq1} and some \eqn{5\leq q\leq10}.
 }
 \seealso{
-Other smoothing rules: \code{\link{smooth_lin}}
+Other smoothing rules: 
+\code{\link{smooth_lin}()}
 }
 \concept{smoothing rules}

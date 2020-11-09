@@ -37,16 +37,16 @@
 #'   stopped whether or not the stopping criterion is satisfied. If the maximum
 #'   number of iteration is reached, the `code` and the `message` components of
 #'   `noisyCE` object are overwritten.
-#' @param maximise if `TRUE` (default) `f` is maximised, otherwise a minimisation
-#'   of `f` is performed.
-#' @param x object of class `noisyCE2`, as returned by `noisyCE2`.
+#' @param maximise if `TRUE` (default) `f` is maximised, otherwise a
+#'   minimisation of `f` is performed.
+#' @param x,object object of class `noisyCE2`, as returned by `noisyCE2`.
 #' @param verbose algorithm verbosity (values `v`, `vv` and `vvv` are admitted).
 #' @param what type of plot should be drawn. If `what = "x"` (default), values
 #'   of the variables are plotted as time series; if `what = "gam"`, time series
 #'   of statistics \eqn{\gamma} is plotted; if `what = "param"`, time series of
 #'   parameters of the sampling distributions are plotted.
-#' @param start,end first and last value to be plotted. If `NULL`, all values are
-#'   plotted.
+#' @param start,end first and last value to be plotted. If `NULL`, all values
+#'   are plotted.
 #'
 #' @return
 #' An object of class `noisyCE2` structured as a list with the following
@@ -68,6 +68,7 @@
 #' \item{code}{convergence code of the algorithm. Value `0` means that algorithm
 #'   has converged; other values are defined according to the stopping rule.}
 #' \item{convMess}{textual message associated to the convergence code (if any).}
+#' \item{compTimes}{named vector computation times of each phase.}
 #'
 #' @examples
 #' library(magrittr)
@@ -81,8 +82,11 @@
 #' @export
 noisyCE2 <- function(f, domain, ..., rho = 0.05, N = 1000,
   smooth = NULL,
-  stopwindow = tail(gam, n * (n > 20)), stoprule = ts_change(x),
+  stopwindow = tail(gam, (n > 20) * n / 2), stoprule = ts_change(x),
   maxiter = 1000, maximise = TRUE, verbose = 'v') {
+  
+  # Read date and time
+  compTimes <- Sys.time()
   
   # Redefine the objective function including the other parameters
   fobj <- function(x) { (2 * maximise - 1) * f(x, ...) }
@@ -90,7 +94,7 @@ noisyCE2 <- function(f, domain, ..., rho = 0.05, N = 1000,
   # Save variable names
   namesX <- names(domain)
   if (is.null(namesX)) {
-  	namesX <- paste0('X', 1:length(domain))
+  	namesX <- paste0('X', seq_along(domain))
   }
   
   # Define the block of variables
@@ -108,6 +112,8 @@ noisyCE2 <- function(f, domain, ..., rho = 0.05, N = 1000,
   convCode <- -2
   
   # Cross-entropy algorithm
+  compTimes %<>% c(Sys.time())
+  
   while((convCode != 0) & (n < maxiter)) {
   	
     # Update the counter
@@ -158,6 +164,8 @@ noisyCE2 <- function(f, domain, ..., rho = 0.05, N = 1000,
     }
   }
   
+  compTimes %<>% c(Sys.time())
+  
   if((convCode != 0) & (n >= maxiter)) {
   	convCode <- -1
   	attr(convCode, 'convMess') <- 'the maximum number of iterations has been reached'
@@ -188,13 +196,20 @@ noisyCE2 <- function(f, domain, ..., rho = 0.05, N = 1000,
   
   vhist %<>% set_names(namesX)
   
+  #
+  compTimes %<>%
+    c(Sys.time()) %>%
+    diff %>%
+    set_names(c('Initialisation', 'Optimisation', 'Preparing output'))
+  
   # Output
   list(
     f = f, fobj = fobj, xopt = xopt, hxopt = hxopt, param = vhist,
-    gam = unname(gam), niter = n, code = convCode, convMess = mess
+    gam = unname(gam), niter = n, code = convCode, convMess = mess,
+    compTimes = compTimes
   ) %>%
     structure(class = 'noisyCE2') %>%
-    return
+    return()
 }
 
 
@@ -205,11 +220,27 @@ print.noisyCE2 <- function(x, ...) {
   cat('Object of class "noisyCE2"\n')
   cat('--------------------------------------\n')
   cat('Status               :', x$convMess, '\n')
+  cat('Computation time     :', 
+    format(unclass(sum(x$compTime)), digits = 4),
+    attr(x$compTime, 'units'), '\n'
+  )
   cat('Number of iterations :', x$niter, '\n')
+  cat('Time per iteration   :',
+    format(unclass(sum(x$compTime) / x$niter), digits = 4),
+    attr(x$compTime / x$niter, 'units'), '\n'
+  )
   cat('Last gamma value     :', tail(x$gam, 1), '\n')
   cat('Solution x*          :', x$xopt, '\n')
   #cat('Optimal value f(x*)  :', x$fobj(x$xopt), '\n')
   invisible(x)
+}
+
+
+
+#' @describeIn noisyCE2 display summary information about a `noisyCE2` object
+#' @export
+summary.noisyCE2 <- function(object, ...) {
+  print(object, ...)
 }
 
 
@@ -232,7 +263,7 @@ plot.noisyCE2 <- function(x, what = c('x', 'gam', 'param'),
       stats::plot.ts(...)
   }
   if (what == 'param') {
-    for(j in 1:length(x$param)) {
+    for(j in seq_along(x$param)) {
       colnames(x$param[[j]]) %<>% paste0(names(x$param)[j], '_', .)
     }
     x$param %>%
@@ -246,5 +277,11 @@ plot.noisyCE2 <- function(x, what = c('x', 'gam', 'param'),
 }
 
 
+
+#' @describeIn noisyCE2 get the solution of the optimisation
+#' @export
+coef.noisyCE2 <- function(object, ...) {
+  object$xopt
+}
 
 

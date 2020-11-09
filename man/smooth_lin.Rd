@@ -22,6 +22,7 @@ Linear smoothing rule
 for some \eqn{a\in[0,1]}.
 }
 \seealso{
-Other smoothing rules: \code{\link{smooth_dec}}
+Other smoothing rules: 
+\code{\link{smooth_dec}()}
 }
 \concept{smoothing rules}

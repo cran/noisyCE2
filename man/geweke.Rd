@@ -25,6 +25,7 @@ A \code{numeric} indicating whether the algorithm has converged:
 \code{geweke} tests the convergence of \code{x} through the Geweke's test.
 }
 \seealso{
-Other stopping rules: \code{\link{ts_change}}
+Other stopping rules: 
+\code{\link{ts_change}()}
 }
 \concept{stopping rules}

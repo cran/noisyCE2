@@ -3,17 +3,32 @@
 \name{noisyCE2}
 \alias{noisyCE2}
 \alias{print.noisyCE2}
+\alias{summary.noisyCE2}
 \alias{plot.noisyCE2}
+\alias{coef.noisyCE2}
 \title{Cross-Entropy Optimisation of Noisy Functions}
 \usage{
-noisyCE2(f, domain, ..., rho = 0.05, N = 1000, smooth = NULL,
-  stopwindow = tail(gam, n * (n > 20)), stoprule = ts_change(x),
-  maxiter = 1000, maximise = TRUE, verbose = "v")
+noisyCE2(
+  f,
+  domain,
+  ...,
+  rho = 0.05,
+  N = 1000,
+  smooth = NULL,
+  stopwindow = tail(gam, (n > 20) * n/2),
+  stoprule = ts_change(x),
+  maxiter = 1000,
+  maximise = TRUE,
+  verbose = "v"
+)
 
 \method{print}{noisyCE2}(x, ...)
 
-\method{plot}{noisyCE2}(x, what = c("x", "gam", "param"), start = NULL,
-  end = NULL, ...)
+\method{summary}{noisyCE2}(object, ...)
+
+\method{plot}{noisyCE2}(x, what = c("x", "gam", "param"), start = NULL, end = NULL, ...)
+
+\method{coef}{noisyCE2}(object, ...)
 }
 \arguments{
 \item{f}{objective function which takes the vector of optimisation variables
@@ -58,20 +73,20 @@ stopped whether or not the stopping criterion is satisfied. If the maximum
 number of iteration is reached, the \code{code} and the \code{message} components of
 \code{noisyCE} object are overwritten.}
 
-\item{maximise}{if \code{TRUE} (default) \code{f} is maximised, otherwise a minimisation
-of \code{f} is performed.}
+\item{maximise}{if \code{TRUE} (default) \code{f} is maximised, otherwise a
+minimisation of \code{f} is performed.}
 
 \item{verbose}{algorithm verbosity (values \code{v}, \code{vv} and \code{vvv} are admitted).}
 
-\item{x}{object of class \code{noisyCE2}, as returned by \code{noisyCE2}.}
+\item{x, object}{object of class \code{noisyCE2}, as returned by \code{noisyCE2}.}
 
 \item{what}{type of plot should be drawn. If \code{what = "x"} (default), values
 of the variables are plotted as time series; if \code{what = "gam"}, time series
 of statistics \eqn{\gamma} is plotted; if \code{what = "param"}, time series of
 parameters of the sampling distributions are plotted.}
 
-\item{start, end}{first and last value to be plotted. If \code{NULL}, all values are
-plotted.}
+\item{start, end}{first and last value to be plotted. If \code{NULL}, all values
+are plotted.}
 }
 \value{
 An object of class \code{noisyCE2} structured as a list with the following
@@ -93,6 +108,7 @@ through function \code{noisyCEcontrol}).}
 \item{code}{convergence code of the algorithm. Value \code{0} means that algorithm
 has converged; other values are defined according to the stopping rule.}
 \item{convMess}{textual message associated to the convergence code (if any).}
+\item{compTimes}{named vector computation times of each phase.}
 }
 \description{
 Unconstraint optimisation of noisy functions through the cross-entropy
@@ -102,7 +118,11 @@ algorithm.
 \itemize{
 \item \code{print}: display synthetic information about a \code{noisyCE2} object
 
+\item \code{summary}: display summary information about a \code{noisyCE2} object
+
 \item \code{plot}: plot various components of a \code{noisyCE2} object
+
+\item \code{coef}: get the solution of the optimisation
 }}
 
 \examples{

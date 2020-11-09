@@ -8,11 +8,15 @@
 \alias{type_negative}
 \title{Functions for defining the types of variables}
 \usage{
-type_custom(type = "custom", init = c(0, 10), randomXj = function(n,
-  v) {     rnorm(n, v[1], v[2]) }, x2v = function(x) {     c(mean(x),
-  sd(x)) }, v2x = function(v) {     v[1] },
-  smooth = list(quote(smooth_lin(x, xt, 1)), quote(smooth_dec(x, xt, 0.9,
-  10))), ...)
+type_custom(
+  type = "custom",
+  init = c(0, 10),
+  randomXj = function(n, v) {     rnorm(n, v[1], v[2]) },
+  x2v = function(x) {     c(mean(x), sd(x)) },
+  v2x = function(v) {     v[1] },
+  smooth = list(quote(smooth_lin(x, xt, 1)), quote(smooth_dec(x, xt, 0.9, 10))),
+  ...
+)
 
 type_real(...)
 
@@ -67,7 +71,7 @@ type_real(
 )
 
 # Define a new type of real variable whith different smoothing
-#parameters:
+# parameters:
 type_real(
   type = 'real3', 
   smooth = list(
